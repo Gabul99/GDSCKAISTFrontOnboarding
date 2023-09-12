@@ -21,4 +21,4 @@ app.post('/registers', (req, res) => {
   res.sendStatus(200);
 });
 
-app.listen(port, () => console.log('서버 성공적 실행'));
+app.listen(port, () => console.log('서버 구동 완료: http://localhost:8080'));
