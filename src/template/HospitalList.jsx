@@ -46,12 +46,8 @@ const HospitalList = () => {
           name="이비인후과"
         />
       </Container2>
-      <Container2>
-        <ListItem type="내과" name="이희찬 내과" time="오늘 09:00 ~ 18:00" region="대전 서구 만년동" patients="3명" />
-      </Container2>
-      <Container2>
-        <ListItem type="이비인후과" name="구글 이비인후과" time="오늘 휴무" region="대전 서구 월평동" patients="-" />
-      </Container2>
+      <ListItem type="내과" name="이희찬 내과" time="오늘 09:00 ~ 18:00" region="대전 서구 만년동" patients="3명" />
+      <ListItem type="이비인후과" name="구글 이비인후과" time="오늘 휴무" region="대전 서구 월평동" patients="-" />
     </Container1>
   );
 };
