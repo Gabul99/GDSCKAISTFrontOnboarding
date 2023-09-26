@@ -4,7 +4,7 @@ import Colors from '../style/Colors';
 import MuiButton from './MuiButton';
 
 const Container = styled.div`
-  width: 688px;
+  width: 100%; //or fit-content
   height: 89px;
   display: flex;
   padding: 16px;
@@ -21,10 +21,11 @@ const Container = styled.div`
   }
 `;
 
-const ContainerLeft = styled.div`
+const LeftArea = styled.div`
   display: flex;
   flex-direction: column;
-  align-content: space-between; //이거 왜 작동 안함?
+  gap: 4px;
+  //justify-content: space-between; //이거 왜 작동 안함?
 
   .title {
     font-family: 'Noto Sans KR Bold';
@@ -32,9 +33,11 @@ const ContainerLeft = styled.div`
   }
 `;
 
-const ContainerRight = styled.div`
+const RightArea = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
 
   .title {
     font-family: 'Noto Sans KR Bold';
@@ -44,8 +47,9 @@ const ContainerRight = styled.div`
 
 const ContainerRow = styled.div`
   display: flex; /* 가로로 나열하려면 flex 사용 */
-  align-items: center; /* 세로 중앙 정렬 */
-  justify-content: flex-start; /* 버튼을 가로로 분포 */
+  justify-content: flex-end;
+  gap: 4px;
+  //justify-content: flex-start; /* 버튼을 가로로 분포 */
 `;
 
 const TypeText = styled.div`
@@ -103,21 +107,22 @@ const ListItem = ({ type, name, time, region, patients }) => {
   // ' | ' 앞부분 띄어쓰기 어케함?
   return (
     <Container>
-      <ContainerLeft>
+      <LeftArea>
         <TypeText>{type}</TypeText>
         <NameText>{name}</NameText>
         <ContainerRow>
           <TimeText>{time}</TimeText>
-          <RegionText> | {region}</RegionText>
+          <RegionText>|</RegionText>
+          <RegionText>{region}</RegionText>
         </ContainerRow>
-      </ContainerLeft>
-      <ContainerRight>
-        <ContainerRow style={{ textAlign: 'right' }}>
-          <PatientText1 style={{ textAlign: 'right' }}>대기자 수: </PatientText1>
-          <PatientText2 style={{ textAlign: 'right' }}> {patients}</PatientText2>
+      </LeftArea>
+      <RightArea>
+        <ContainerRow>
+          <PatientText1>대기자 수: </PatientText1>
+          <PatientText2> {patients}</PatientText2>
         </ContainerRow>
         <MuiButton />
-      </ContainerRight>
+      </RightArea>
     </Container>
   );
 };

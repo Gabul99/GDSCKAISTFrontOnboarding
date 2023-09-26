@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import StyledButton from '../components/Chip';
+import Chip from '../components/Chip';
 import Colors from '../style/Colors';
 import ListItem from '../components/ListItem';
 
@@ -28,12 +28,23 @@ const Container2 = styled.div`
 `;
 
 const HospitalList = () => {
+  const [selectedCondition, setSelectedCondition] = useState('전체');
+
+  const handleChipClick = condition => {
+    // 클릭된 Chip 버튼의 상태를 업데이트합니다.
+    setSelectedCondition(condition);
+  };
+
   return (
     <Container1>
       <Container2>
-        <StyledButton>전체</StyledButton>
-        <StyledButton>내과</StyledButton>
-        <StyledButton>이비인후과</StyledButton>
+        <Chip selected={selectedCondition === '전체'} onClick={() => handleChipClick('전체')} name="전체" />
+        <Chip selected={selectedCondition === '내과'} onClick={() => handleChipClick('내과')} name="내과" />
+        <Chip
+          selected={selectedCondition === '이비인후과'}
+          onClick={() => handleChipClick('이비인후과')}
+          name="이비인후과"
+        />
       </Container2>
       <Container2>
         <ListItem type="내과" name="이희찬 내과" time="오늘 09:00 ~ 18:00" region="대전 서구 만년동" patients="3명" />

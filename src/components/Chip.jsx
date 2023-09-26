@@ -20,6 +20,19 @@ const StyledButton = styled.button`
     color: ${Colors.WHITE100};
     border: 1px solid ${Colors.POINT_DEEP};
   }
+  &.selected {
+    background-color: ${Colors.POINT_DEEP};
+    color: ${Colors.WHITE100};
+    border: 1px solid ${Colors.POINT_DEEP};
+  }
 `;
 
-export default StyledButton;
+const Chip = ({ selected, onClick, name }) => {
+  return (
+    <StyledButton onClick={onClick} className={selected ? 'selected' : ''}>
+      {name}
+    </StyledButton>
+  );
+};
+
+export default Chip;
