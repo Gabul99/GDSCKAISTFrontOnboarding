@@ -5,6 +5,14 @@ const cors = require('cors');
 const app = express();
 const port = 8080;
 
+/**
+ * Data Interface
+ * id: number;
+ * hospitalName: string;
+ * registerTime: string;
+ * symptom: string;
+ * note: string;
+ */
 const registers = [];
 
 app.use(function (req, res, next) {
@@ -41,8 +49,16 @@ app.post('/registers', (req, res) => {
     res.status(500).json({ status: 500, message: 'UNEXPECTED_ERROR' });
     return;
   }
-  const newRegister = req.body;
-  registers.push(newRegister);
+  const { body } = req;
+  const id = registers.length + 1;
+  const { hospitalName, registerTime, symptom, note } = body;
+  registers.push({
+    id,
+    hospitalName,
+    registerTime,
+    symptom,
+    note,
+  });
   res.sendStatus(200);
 });
 
