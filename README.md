@@ -2,111 +2,134 @@
 
 > GDSC 프론트엔드 팀에 오신 것을 환영합니다!
 
-이 프로젝트는 React 프론트엔드에 대한 경험이 그닥 풍부하지 못하신 신입 팀원 분들께 React 프로젝트 경험을 제공하고 GDSC 팀에서 일하는 방식에 익숙해실 수 있도록 돕기 위해 만들어졌습니다.
-이를 통해 여러분께 도움이 될 것으로 기대하는 점은 아래와 같습니다.
+## Task 2. 상태 관리하기
 
-이 프로젝트는 총 4개의 Step으로 진행될 예정이며, 간단한 '병원 접수' 컨셉의 애플리케이션을 조금씩 개발하고 바꿔가면서 연습해보려고 합니다.
-Task 진행은 아래와 같습니다.
+이번 Task 2에서는 상태를 본격적으로 사용해보려 합니다!
+경우에 따라서 Task 1에서 이미 useState 등의 상태를 이용해서 기능을 만들어보셨을 수도 있을 것 같은데요.
+Task 2에서 조금 더 본격적으로 정보를 저장하고 그에 따른 Effect를 관리하는 법을 연습해보시게 될 것입니다!
 
-- **Task 0. 프로젝트 초기 세팅**
-  - VSCode 세팅
-  - 초기 프로젝트 세팅
-  - 폴더링, 스타일링 등 간단한 규칙 알아보기
-- **Task 1. View 만들기**
-  - CSS 이용해 레이아웃 및 디자인 하기 - Flexbox에 대해 알아보기
-  - 컴포넌트화하기
-- **Task 2. 상태 관리와 Routing**
-  - 데이터를 입력 받는 Modal Form 만들기
-  - React Hooks와 useState와 useEffect 사용하기
-  - Recoil을 이용해 전역 상태 관리 만들기
-  - Router를 이용해 화면 끼리의 Navigating 만들기
-- **Task 3. 서버와 통신하기**
-  - 비동기에 대해 이해하기
-  - GET, POST API 이용 방법 알아보기
-  - API 사용해 추가 기능 만들기
+### Task 2-1. 접수 Modal 만들기
 
-Task 1, 2, 3의 경우 진행 후 시니어와의 코드 리뷰가 진행될 예정입니다!
+Figma에서 접수하기 Modal을 확인하실 수 있습니다! Modal은 기존 화면 위에 덮어지면서 별개의 작업 흐름을 보여주는 팝업 같은 UI을 말합니다.
+이 Modal 자체는 MUI에서 가져와서 사용해주시면 되고, MUI Modal 안에 우리가 만든 컨텐츠를 넣어주면 됩니다.
 
-## Task 0. 프로젝트 초기 세팅
+#### 상태(useState)와 그로 인한 영향(useEffect)
 
-> 만약 JavaScript에 익숙하지 않아서 걱정된다면, 우선 [벨로퍼트 자바스크립트](https://learnjs.vlpt.us/)에서 최소 1장과 2장을 읽고 오시면 도움이 될 것입니다!
+모든 코드가 Pure할 수 있다면 좋겠지만, 대부분의 애플리케이션은 필연적으로 '상태'를 관리하게 됩니다.
+여기서 말하는 상태는 'UI에 영향을 끼치는 어떤 값'입니다. 예를 들면 Modal이 켜져있는지 여부를 확인하기 위한 Boolean 값을 상태로 만들고, 그 값이 true가 되면 Modal이 보이고, false면 안보이게 만들 수 있습니다.
+React에서는 이런 상태를 `useState`라는 Hook을 이용해서 정할 수 있습니다. 위에서 말한 Modal 온오프 여부는 `const [isModalOpen, setModalOpen] = useState(false)` 이런 식으로 만들 수 있습니다.
+사실 React에서 이 state라는게 처음 보면 그냥 변수(`let data = 0`)를 사용하는 것과 무슨 차이가 있을까? 라고 생각할 수도 있습니다.
+만약 카운터를 React 컴포넌트로 만든다고 생각해봅시다.
 
-### npm Package 다운로드
+```
+case 1.
+let count = 0;
 
-#### npm이란?
+function up() {
+  count += 1;
+}
 
-npm은 node package manager로, Node.js 개발 환경의 기본 패키지 관리자입니다.
-여기서 말하는 패키지는 여러 라이브러리, 프레임워크 같은 코드를 말합니다. 즉 우리가 만든게 아니라 따로 다운받는 라이브러리들을 관리하는 소프트웨어라고 생각하시면 됩니다.
-JS 기반 프로젝트는 거의 `node_modules` 라는 폴더를 가지고 있는데, 이는 npm을 통해 다운받은 다른 라이브러리에 대한 데이터가 들어있는 폴더입니다. 여기에는 React도 포함되고, styled-components, MUI, babel, eslint 등 코드 작업을 위한 굉장히 많은 코드들이 들어있습니다. 실제로 열어보면 깜짝 놀랍니다. 이런 외부 코드들은 서로 버전 관리가 꼬이거나 하는 경우가 있어서 직접 체크하기 힘들기에, npm이나 yarn 같은 도구를 사용해서 관리하는 편입니다.
-우리의 웹 프로젝트를 구동시키려면 이 다운받은 라이브러리를 가져와서 연결시키는 빌드 과정이 필요합니다. 따라서 프로젝트 테스트, 빌드 등도 npm을 통해 Node.js로 구동시키게 됩니다.
+return <div onClick={() => up()}>{count}</div>
 
-#### package.json
+================
+case 2.
+const [count, setCount] = useState(0);
 
-package.json은 npm을 사용하는 프로젝트에는 반드시 있어야 하는 파일으로, 어떤 외부 패키지를 사용하고 있는지, 이 프로젝트의 정보는 무엇인지, 이 프로젝트에는 어떤 메서드들이 있는지 정보를 담고 있습니다.
-package.json을 파일을 확인하면 코드를 어떻게 실행시킬지, 코드에 어떤 라이브러리들이 사용되고 있는지 확인할 수 있습니다. dependencies 를 보면 라이브러리들과 그 버전을, scripts 를 보면 npm run ~~ 로 쓸 수 있는 메서드를 확인할 수 있습니다.
+function up() {
+  setCount(count + 1);
+}
 
-#### (필수) Package 설치하기
+return <div onClick={() => up()}>{count}</div>
+```
 
-아까 `node_modules` 라는 폴더가 있다고 했었는데, clone 받은 레포지토리에는 `node_modules` 폴더가 없을 것입니다. 왜냐면 온갖 코드가 다 들어있기 때문에 너무 무거워서 굳이 github에는 올리지 않기 때문인데요.
-어차피 레포지토리 안에는 package.json, package-lock.json 파일이 있기 때문에 `node_modules` 가 없더라도 다른 팀원과 똑같은 환경을 구성할 수 있습니다.
-따라서 **명령 프롬포트나 Terminal에서 `npm install` 을 한 번 구동**해주세요.
-그러면 필요로 하는 라이브러리가 전부 설치가 될 것이고 `node_modules` 폴더가 생길겁니다.
-차후 만약 다른 사람이 추가적인 라이브러리를 설치하거나 삭제해 변동이 생겼을 때도 다른 사람은 `npm install` 을 이용하면 됩니다.
+카운트 숫자를 누르면 카운트가 늘어나도록 의도한 코드입니다.
+실제로 해보면 1번 케이스는 제대로 동작하지 않고, 2는 제대로 동작할 것입니다.
+왜냐하면 그냥 변수가 바뀔 때는 React가 UI를 리랜더링하지 않고, `useState`가 제공하는 Setter를 이용해서 값을 업데이트하면 UI를 리랜더링하기 때문입니다.
+따라서 React에서 이 상태라는 것은 화면을 우리가 원하는대로 랜더링하기 위해서 적절하게 사용해야 하는 요소이기 때문에, `useState`의 동작에 대해 잘 이해해야 합니다.
 
-### VSCode, ESLint, Prettier 설정
+`useEffect`는 상태의 변화에 따른 그 영향(side effect)을 처리하는 Hook입니다. 카운트 값이 올라갈 때마다 10이 넘어가면 콘솔에 넘었다고 출력이 한 번 되게 하고 싶다면, 아래처럼 할 수 있습니다.
 
-#### ESLint, Prettier란?
+```
+useEffect(() => {
+  if (count >= 10) console.log("10을 넘었어요");
+}, [count]);
+```
 
-하나의 코드 베이스에서 협업을 할 때, 코드의 스타일은 가급적이면 같은 것이 좋습니다.
-원래 사람마다 코드를 작성하는 법은 다 다릅니다. 누군가는 `{abc}` 로, 누군가는 `{ abc }` 로 작성하기도 합니다. 컴포넌트의 Props를 위한 `interface Props` 를 만들 때 컴포넌트 위에 작성하는 사람도 있고, 컴포넌트 아래에 작성하는 사람도 있습니다.
-본인이 작성한 코드를 본인만 볼 때는 괜찮겠지만, 협업 상황에서는 자신의 코드 뿐만이 아니라 다른 코드도 확인하게 됩니다. 자신의 코드를 다른 동료가 확인하면서 개발을 해야 할 수도 있고, 동료의 코드에서 생긴 버그를 내가 급하게 고쳐야 하는 상황이 올 수도 있습니다. 그때마다 자신과 다른 스타일의 코드에 당황하면서 파악에 어려움을 겪으면 문제가 생깁니다.
+`useEffect(callback, deps)`에서, 이 `deps`는 값들이 들어간 array입니다. 위 코드에서는 `count`가 들어있는데, 이 뜻은 리랜더링될 때마다 `count` 값이 이전과 달라졌는지 확인하고, 달라졌다면 첫 번째 parameter로 넘겨둔 콜백을 구동하게 됩니다.
+상황에 따라 컴포넌트가 처음 랜더링 됐을 때 딱 한 번 구동하고 싶은 코드들이 있다면, `useEffect(() => { ... }, [])` 이런 식으로 `deps`를 비워두면 됩니다. 주로 초기화 중 네트워크 통신을 위해 데이터를 받아와야 할 때 많이 사용합니다.
 
-따라서 **한 코드 베이스에서는 코드 스타일을 어느정도 비슷하게 가져가야 전반적인 생산성이 높아집니다**.
+만약 Hooks나 이런 상태에 대해 좀 더 알고 싶다면 제가 쓴 [글 1](https://medium.com/hcleedev/web-react-hooks%EC%9D%98-%EB%93%B1%EC%9E%A5-%EB%B0%B0%EA%B2%BD%EA%B3%BC-%EC%9D%98%EC%9D%98-d400cbc203a4), [글 2](https://medium.com/hcleedev/web-usestate%EC%9D%98-%EB%8F%99%EC%9E%91-%EC%9B%90%EB%A6%AC%EC%99%80-%ED%95%A8%EC%A0%95-7b4825c16b9)나 [공식 문서](https://react.dev/reference/react)를 참고해보세요!
 
-ESLint와 Prettier는 이를 도와줍니다.
-**ESLint**는 JavaScript(TypeScript)의 코드 스타일을 확인해주는 역할을 합니다. 예를 들어 동등 비교(`==` )가 아닌 일치 비교(`===` )를 사용하고 있는지, 선언 이후 변하지 않는 상수인데 `let` 이나 `var` 를 사용하고 있지는 않은지 체크해줍니다. ESLint에서 제공하는 Rule은 굉장히 많습니다. 그걸 하나하나 다 설정하기엔 어렵기 때문에 흔히 airbnb에서 제공하는 ESLint 스타일을 가져와서 조금씩 고쳐쓰는 편입니다.
-**Prettier**는 JavaScript의 코드를 분석하기보다는 파일 내 코드 형식을 신경쓰는 역할을 합니다. 주로 indentation이 2칸인지 4칸인지, 라인 마지막에 세미콜론(;)을 붙일지, 띄어쓰기는 어떻게 할지 등을 체크해줍니다. 주로 Prettier는 파일을 저장할 때마다 자동으로 적용되도록 만드는 편입니다.
-우리 레포지토리에도 기본적인 ESLint와 Prettier를 도입하려고 하며, 아래는 여러분이 VSCode에서 이를 잘 활용할 수 있도록 돕는 내용을 담고 있습니다.
+**Task 요구사항**
 
-#### (필수) 처음 레포지토리를 Clone 받아서 초기 설정하는 경우
+- 증상 선택 드롭다운은 MUI Select를 이용해서 구현
+- 증상은 '콧물', '두통', '복통' 3가지로 제한
+- 추가 참고 사항은 MUI TextField를 이용해서 구현
+- 접수하기 버튼은 MUI Button을 이용해서 구현
+- 접수하기 버튼은 최소 증상을 선택해야 활성화
 
-1. VSCode Extenstion에서 ESLint와 Prettier를 설치
-2. (이미 하긴 했겠지만) 터미널에서 `npm install` 을 한 번 돌려준다.
-   1. 이 과정을 하는 이유는 package.json에 있는 라이브러리, 플러그인을 한 번 싹 다운 받기 위함.
-3. VSCode에서 F1 키를 눌러서 나오는 입력창에 Open User Settings(JSON)을 검색해서 JSON 파일을 연 다음, 아래에 있는 내용을 넣어준다.
-   1. 아래 내용을 넣으면 포커스가 IDE가 아닌 **다른 창으로 갈 때마다 자동 저장이 되며, 저장될 때마다 Prettier가 format을 정리**해준다.
+### Task 2-2. Recoil 이용해 전역 상태 관리 해보기
 
-```jsx
-{
-    "files.autoSave": "onWindowChange",
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true,
-    },
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "[typescriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "editor.tabSize": 2
+#### 전역 상태 관리 라이브러리란
+
+위에서 사용했던 `useState` 같은 경우는 해당 컴포넌트 - 혹은 하위 컴포넌트 - 정도에 한정되어있습니다. 물론 대부분의 경우 그정도도 문제 없지만 가끔 애플리케이션 전체적으로 적용하고 싶은 상태라거나(ex. 다크모드) 너무 깊은 하위 컴포넌트로 Props를 계속 넘겨줘야 해서 귀찮은 경우가 있습니다.
+그런 경우 전역 상태 라이브러리를 사용합니다. 특정 컴포넌트에 한정되지 않고 보다 넓은 범위에서 상태를 이용하기 위한 라이브러리고, 대표적으로 Redux, MobX, Recoil, Zustand 같은게 있습니다.
+좀 더 알고 싶으면 제가 쓴 [이 글](https://medium.com/hcleedev/web-%EC%83%81%ED%83%9C-%EA%B4%80%EB%A6%AC-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC%EB%9E%80-%EA%B0%9C%EB%85%90-redux-%EC%98%88%EC%8B%9C-acf48c51ae14)을 참고하면 좋을 것 같습니다!
+
+#### Recoil이란
+
+우리는 그 중에 Recoil을 사용해보려고 합니다. Redux가 가장 범용적이긴 하지만, 요즘은 Recoil이나 Zustand가 핫합니다. 물론 이것도 한 1년 지나면 또 트렌드 바뀔 수도 있음...
+Recoil은 전역에서 사용할 수 있는 state를 `atom`을 이용해 만들 수 있습니다. 아마 store 폴더를 보면 예시를 확인하실 수 있을 것입니다. 앞으로 만들 때도 store 폴더 안에 파일을 하나씩 파서 만들어주세요!
+
+```
+// atomExample.js
+const exampleAtom = atom({
+  key: 'exampleAtom',
+  default: null,
+});
+
+export default exampleAtom;
+
+// component.jsx
+import exampleAtom from '~~';
+
+const Component = () => {
+  const [example, setExample] = useRecoilState(exampleAtom);
+  ...
 }
 ```
 
-4. 이러고나서 VSCode를 한 번 껏다 키거나 하면 적용될 것.
-5. 코드에 빨간 색 에러 표시나 노란색 워닝 표시가 나올 수 있는데, 특별한거 아니면 무시해도 되고, 에러 표시의 경우 한번 확인해보고 굳이 안해도 되는 규칙이면 제외하면 되니까 시니어에게 물어볼 것.
+이런 식으로 컴포넌트에서 가져와서 사용할 수 있습니다. 이러면 여러 컴포넌트에서 공유하면서 사용하기 훨씬 편해집니다.
+이때 `useRecoilState`, `useRecoilValue`, `useRecoilSetState` 등 다양한 custom hook을 제공하니 적절히 필요에 따라 사용하시면 됩니다!
+하지만 편하다고 남용하면 안됩니다. 적절히 해당 컴포넌트 내에서, 하위 컴포넌트 한 두 단계 정도에서만 사용될 것이라면 그냥 `useState`를 사용하는 것이 가장 좋습니다. 좀 뜬금없이 여기저기 같은 값을 공유해야 할 때 적절히 Recoil을 사용하게 되면 좋을 것입니다.
 
-#### 체크하기
+**Task 요구사항**
 
-모든 세팅을 완료한 후 `npm run start` 를 입력해 애플리케이션이 에러 없이 잘 구동되는지 확인해주세요!
+- 접수 내역을 저장하는 Recoil atom 만들기
+- 접수 Modal에서 접수하기를 누르면 Recoil로 만든 저장 공간에 접수 내역 추가하는 것 구현
+  - 접수 내역은 병원 이름, 앞에 남은 사람, 증상, 추가 참고 사항, 그리고 접수한 시간을 저장한다.
 
-### (필수) 코드 작성 요령
+### Task 2-3. Router 이용해 새로운 페이지를 만들고, 내 예약 내역 보기 페이지 만들기
 
-이는 [미리 작성해둔 문서](https://www.notion.so/kaist-students/Convention-9a33e229a9db415194e3ad2fc8460b2e?pvs=4)로 대체합니다! 확인하실 수 없을 시 GDSC KAIST 노션 권한을 확인해주세요.
-이 문서까지 한 번 쭉 읽고 돌아오시면 되겠습니다.
+#### Single Page Application, SPA란
 
-## Task 1으로.
+과거의 웹 페이지는, URL 하나를 바꿀 때마다 서버로부터 새로운 HTML 파일을 받아와 로딩해야 했습니다. 어릴 때는 하이퍼 링크 하나를 누를 때마다 중간중간 하얀 화면과 빙글빙글 로딩창이 돌아갔던걸 기억하실겁니다. (일단 제가 어릴 때는 그랬습니다..)
+하지만 요즘은 완전 처음에만 하얀 화면으로 로딩을 하지, URL이 바뀌어도 화면이 새로 로딩되는 것이 아니라 빠릿빠릿하게 변경되는 것을 느낄 수 있습니다.
+이런 경우는 대부분 Single Page Application, SPA를 적용한 경우라고 생각해도 됩니다.
+SPA는 이 웹 애플리케이션을 만들기 위한 모든 재료(JavaScript 등)를 초기 로딩에 받아와서, URL이 바뀌어도 웹 서버에 새로운 페이지를 요청하는게 아닌, 알아서 JavaScript로 필요한 화면을 만들어서 즉각 보여줍니다.
+물론 SPA도 처음에 받아와야 하는 번들의 크기가 워낙 큰 것이 단점으로 꼽히고, 빈 HTML 파일에 JavaScript로 내용물을 채워넣는 방식이다보니 검색 엔진 봇이 HTML만 보고 비어있다고 판단한 후 정보를 다 수집하지 못하는 단점이 있었습니다. (SEO 최적화라고 부릅니다) 그래서 지금은 그런 문제들을 해결하기 위한 Next.js, Qwik 등 온갖 새로운 프레임워크도 등장하고 있죠.
+다만 저희는 단순한 React만 사용하기 때문에, SPA로 애플리케이션을 만들 것이라고 이해해주시면 됩니다.
 
-세팅이 완료되었으면 이제 Task 1으로 가겠습니다.
-여기서 `git checkout task1` 명령어를 통해 task1 브랜치로 이동한 후, 그쪽에 있는 README.md 파일의 가이드에 따라 Task를 진행해주세요!
+#### Router란
+
+그러면 이 SPA에서는 URL의 변화를 '인지'하고, 그에 적절한 '대응'을 해주는 로직도 필요합니다. 브라우저가 알아서 해주는게 아니라, 개발자가 이를 정해줘야 하죠.
+React에서는 react-router 라이브러리가 주로 사용됩니다. 우리도 `page/router.jsx` 파일을 보면 확인하실 수 있을 것입니다.
+이 Router는 브라우저가 URL이 바뀌었다는 이벤트를 발생시키면, 이를 인지하고 URL 값에 맞는 컴포넌트를 랜더링하고 정보를 전달하는 역할을 합니다.
+물론 웹 애플리케이션 내에서 하이퍼 링크 같은 것을 눌러서 Router에게 URL 변경을 요청할 수도 있습니다. react-router가 제공하는 `navigate`같은 함수들이 있습니다.
+이번 Task 2-3에서는 이 Router 기능을 살짝이나마 사용해 새로운 페이지를 만드는 경험을 해보려고 합니다.
+
+**Task 요구사항**
+
+- `router.jsx` 파일에서 `"/my"`로 연결되도록 Routing 추가
+- 접수 내역을 저장하고 있는 Recoil atom으로부터 데이터를 받아와 리스트처럼 보여주는 화면 구현
+- 취소하기 버튼을 누르면 Recoil atom으로부터 해당 데이터를 삭제하는 것 구현
